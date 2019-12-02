@@ -9,15 +9,15 @@ app.get('/monupload', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-app.post('/monupload', upload.array('myfiles'), function (req, res, next) {
+app.post('/monupload', upload.array('myfiles'), (req, res, next) => {
   const files = req.files;
   if (!files) {
     res.send('Please choose at least one file')
-  } else if (files.map(x => x.size).reduce((a, b) => a + b, 0) > 3145728) {
+  } else if (files.map(file => file.size).reduce((a, b) => a + b, 0) > 3145728) {
     res.send('Please upload a file smaller than 3 Mo');
   } else {
     req.files.map(file => {
-      fs.rename(file.path, 'public/images/' + file.originalname, function(err){
+      fs.rename(file.path, `public/images/${file.originalname}`, (err) => {
         if (err) {
             res.send('Problem when upload');
             console.log(err);
